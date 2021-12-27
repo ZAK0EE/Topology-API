@@ -11,10 +11,10 @@
 #include "API.h"
 
 
-static TopologyList TopologyList_t;
 
 
-Result readJSON(std::string FileName)
+
+Result readJSON(TopologyList *TopologyList_t, std::string FileName)
 {
 	json topjson;
 
@@ -22,8 +22,6 @@ Result readJSON(std::string FileName)
 
 	//Streaming jsonfile into the topjson -memory-
 	jsonfile >> topjson;
-
-
 
 
 	//Topology
@@ -71,13 +69,14 @@ Result readJSON(std::string FileName)
 
 		topology->devices.push_back(std::move(device));
 	}
-	TopologyList_t.push_back(move(topology));
+	TopologyList_t->push_back(move(topology));
+
 	return "GOOD";
 	
 }
 
 
-void writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
+Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
 {
 	ordered_json j;
 	j["id"] = topology->id;
@@ -107,4 +106,21 @@ void writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
 
 	std::ofstream out(FileName);
 	out << std::setprecision(2) << std::setw(2) << j;
+	return "GOOD";
+}
+
+
+
+Result deleteTopology(TopologyList& list, std::string TopologyID)
+{
+
+	for (int i = 0, n = list.size(); i < n; i++) {
+		if ((*list[i]).id.compare(TopologyID) == 0)
+		{
+			list.erase(list.begin() + i);
+			break;
+		}
+
+	}
+	return "GOOD";
 }

@@ -19,10 +19,13 @@ typedef struct topology_s
 
 typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
 
-//Topology list 
+
 
 typedef std::string Result;
-Result readJSON(std::string FileName);
-void writeJSON(std::shared_ptr<topology_s>, std::string FileName);
+//Function prototypes
+
+Result readJSON(TopologyList* TopologyList_t, std::string FileName);
+Result writeJSON(std::shared_ptr<topology_s>, std::string FileName);
+Result deleteTopology(TopologyList& TopologyList_t, std::string TopologyID);
 
 #endif // API_H_INCLUDED
