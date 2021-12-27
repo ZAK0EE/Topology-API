@@ -14,7 +14,7 @@
 
 
 
-Result readJSON(TopologyList *TopologyList_t, std::string FileName)
+Result readJSON(TopologyList &list, std::string FileName)
 {
 	json topjson;
 
@@ -69,9 +69,9 @@ Result readJSON(TopologyList *TopologyList_t, std::string FileName)
 
 		topology->devices.push_back(std::move(device));
 	}
-	TopologyList_t->push_back(move(topology));
+	list.push_back(move(topology));
 
-	return "GOOD";
+	return "SUCCEED";
 	
 }
 
@@ -105,22 +105,36 @@ Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
 	}
 
 	std::ofstream out(FileName);
-	out << std::setprecision(2) << std::setw(2) << j;
-	return "GOOD";
+	out << std::setw(2) << j;
+	return "SUCCEED";
 }
 
 
 
 Result deleteTopology(TopologyList& list, std::string TopologyID)
-{
+{ 
 
 	for (int i = 0, n = list.size(); i < n; i++) {
-		if ((*list[i]).id.compare(TopologyID) == 0)
+		if (list[i]->id.compare(TopologyID) == 0)
 		{
 			list.erase(list.begin() + i);
 			break;
 		}
 
 	}
-	return "GOOD";
+	return "SUCCEED";
+}
+
+Devicelist queryDevices(TopologyList& list, std::string TopologyID)
+{
+	Devicelist devlist;
+	for (int i = 0, n = list.size(); i < n; i++) {
+		if (list[i]->id.compare(TopologyID) == 0)
+		{
+			devlist = list[i]->devices;
+			break;
+		}
+
+	}
+	return devlist;
 }

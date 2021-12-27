@@ -24,8 +24,9 @@ typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
 typedef std::string Result;
 //Function prototypes
 
-Result readJSON(TopologyList* TopologyList_t, std::string FileName);
-Result writeJSON(std::shared_ptr<topology_s>, std::string FileName);
-Result deleteTopology(TopologyList& TopologyList_t, std::string TopologyID);
-
+Result readJSON(TopologyList& list, std::string FileName);
+Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName);
+Result deleteTopology(TopologyList& list, std::string TopologyID);
+Devicelist queryDevices(TopologyList& list, std::string TopologyID);
+//Devicelist queryDevicesTopologyList& (TopologyID);
 #endif // API_H_INCLUDED
