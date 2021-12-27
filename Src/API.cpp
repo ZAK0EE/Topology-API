@@ -11,9 +11,10 @@
 #include "API.h"
 
 
+static TopologyList TopologyList_t;
 
 
-topology_s readJSON(std::string FileName)
+Result readJSON(std::string FileName)
 {
 	json topjson;
 
@@ -26,9 +27,9 @@ topology_s readJSON(std::string FileName)
 
 
 	//Topology
-	topology_s topology;
+	std::unique_ptr<topology_s> topology = std::make_unique<topology_s>();
 
-	topology.id = topjson["id"].get<std::string>();
+	topology->id = topjson["id"].get<std::string>();
 
 	int compsize = topjson["components"].size();
 
@@ -68,17 +69,20 @@ topology_s readJSON(std::string FileName)
 		for (const auto& item : topjson["components"][i]["netlist"].items())
 			device->netlist_setval(item.key(), item.value());
 
-		topology.devices.push_back(std::move(device));
+		topology->devices.push_back(std::move(device));
 	}
-	return topology;
+	TopologyList_t.push_back(move(topology));
+	return "GOOD";
+	
 }
 
 
-void writeJSON(topology_s topology, std::string FileName)
+void writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
 {
 	ordered_json j;
-	j["id"] = topology.id;
-	Devicelist list = topology.devices;
+	j["id"] = topology->id;
+	Devicelist list = topology->devices;
+	
 	int compsize = list.size();
 
 	for (int i = 0; i < compsize; i++)
@@ -101,6 +105,6 @@ void writeJSON(topology_s topology, std::string FileName)
 			j["components"][i]["netlist"][k] = v;
 	}
 
-	std::ofstream out("out.json");
+	std::ofstream out(FileName);
 	out << std::setprecision(2) << std::setw(2) << j;
 }

@@ -9,16 +9,20 @@ using ordered_json = nlohmann::ordered_json;
 
 typedef std::vector<std::shared_ptr<electronic>> Devicelist;
 
-typedef struct 
+typedef struct topology_s
 {
 	std::string id;
 	Devicelist devices;
 
 }topology_s;
 
-typedef std::vector<topology_s> TopologyList;
 
-topology_s readJSON(std::string FileName);
-void writeJSON(topology_s toplogy, std::string FileName);
+typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
+
+//Topology list 
+
+typedef std::string Result;
+Result readJSON(std::string FileName);
+void writeJSON(std::shared_ptr<topology_s>, std::string FileName);
 
 #endif // API_H_INCLUDED
