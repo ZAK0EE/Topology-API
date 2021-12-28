@@ -17,7 +17,7 @@ using ordered_json = nlohmann::ordered_json;
  struct topology_s
 {
 	std::string id;
-	Devicelist devices;
+	DeviceList devices;
 
 };
 
@@ -54,7 +54,6 @@ using ordered_json = nlohmann::ordered_json;
 			device = std::make_unique<resistor>(topjson["components"][i]["id"]);
 		else if (type == "nmos")
 			device = std::make_unique<nmos>(topjson["components"][i]["id"]);
-
 		else
 		{
 			//Can be replaced with any error handler
@@ -87,12 +86,24 @@ using ordered_json = nlohmann::ordered_json;
 	
 }
 
+std::vector<std::string> queryTopologies(TopologyList& list)
+{
+	std::vector<std::string> topid_list;
+	for (int i = 0, n = list.size(); i < n; i++)
+	{
+		topid_list.push_back(list[i]->id);
+	}
+	return topid_list;
+}
 
 int writeJSON(std::shared_ptr<topology_s> topology, const std::string& FileName)
 {
+	if(topology->id.compare("NULL") == 0)
+		return 0;
+
 	ordered_json j; //using "ordered json" instead of "json" only is to maintain the order as inputted.
 	j["id"] = topology->id;
-	Devicelist list = topology->devices;
+	DeviceList list = topology->devices;
 	
 	int compsize = list.size();
 
@@ -145,9 +156,9 @@ int deleteTopology(TopologyList& list, const std::string& TopologyID)
 	return found;
 }
 
-Devicelist queryDevices(TopologyList& list, const std::string& TopologyID)
+DeviceList queryDevices(TopologyList& list, const std::string& TopologyID)
 {
-	Devicelist devlist;
+	DeviceList devlist;
 	for (int i = 0, n = list.size(); i < n; i++) 
 	{
 		if (list[i]->id.compare(TopologyID) == 0)
@@ -161,10 +172,10 @@ Devicelist queryDevices(TopologyList& list, const std::string& TopologyID)
 	return devlist;
 }
 
-Devicelist queryDevicesWithNetlistNode(TopologyList& list, const std::string& TopologyID, const std::string& NetlistNodeID)
+DeviceList queryDevicesWithNetlistNode(TopologyList& list, const std::string& TopologyID, const std::string& NetlistNodeID)
 {
-	Devicelist devlist = queryDevices(list, TopologyID);
-	Devicelist connected; // Device list for devices connected to the netlist node.
+	DeviceList devlist = queryDevices(list, TopologyID);
+	DeviceList connected; // Device list for devices connected to the netlist node.
 	for (int i = 0, n = devlist.size(); i < n; i++)
 	{
 		const std::map<std::string, std::string>* netlist = devlist[i]->netlist_getall();
