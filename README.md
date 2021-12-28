@@ -1,4 +1,8 @@
 # Topology API
+## Resources
+[nlohmann json](https://github.com/nlohmann/json) library proved its capabilities to ease the process of parsing JSON files.
+
+
 ## Features
 #### Provide the functionality to:
 - Read a topology from a given JSON file and store it in the memory.
