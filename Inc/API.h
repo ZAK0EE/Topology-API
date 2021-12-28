@@ -9,12 +9,12 @@ typedef struct topology_s topology_s;
 typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
 
 typedef std::string Result;
-//Function prototypes
 
-Result readJSON(TopologyList& list, std::string FileName);
-Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName);
-Result deleteTopology(TopologyList& list, std::string TopologyID);
-Devicelist queryDevices(TopologyList& list, std::string TopologyID);
-Devicelist queryDevicesWithNetlistNode(TopologyList& list, std::string TopologyID, std::string NetlistNodeID);
+//Function prototypes
+int readJSON(TopologyList& list, const std::string& FileName);
+int writeJSON(std::shared_ptr<topology_s> topology, const std::string& FileName);
+int deleteTopology(TopologyList& list, const std::string& TopologyID);
+Devicelist queryDevices(TopologyList& list, const std::string& TopologyID);
+Devicelist queryDevicesWithNetlistNode(TopologyList& list, const std::string& TopologyID, const std::string& NetlistNodeID);
 //Devicelist queryDevicesTopologyList& (TopologyID);
 #endif // API_H_INCLUDED
