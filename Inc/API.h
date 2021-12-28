@@ -32,7 +32,6 @@ int readJSON(TopologyList& list, const std::string& FileName);
 *
 * @param[in]  list TopologyList created by the user
 * @return     returns a vector of strings to topologies IDs.
-*			  -File could not be opened.
 *
 */
 std::vector<std::string> queryTopologies(TopologyList& list);
