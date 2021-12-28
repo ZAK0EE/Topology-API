@@ -8,7 +8,6 @@ typedef std::vector<std::shared_ptr<electronic>> Devicelist;
 typedef struct topology_s topology_s;
 typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
 
-typedef std::string Result;
 
 //Function prototypes
 int readJSON(TopologyList& list, const std::string& FileName);
