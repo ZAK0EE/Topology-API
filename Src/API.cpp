@@ -13,7 +13,6 @@
 using json = nlohmann::json;
 using ordered_json = nlohmann::ordered_json;
 
-
  struct topology_s
 {
 	std::string id;
@@ -21,35 +20,31 @@ using ordered_json = nlohmann::ordered_json;
 
 };
 
- 
- int readJSON(TopologyList& list, const std::string& FileName)
- {
-	 json topjson;
+
+Result readJSON(TopologyList &list, std::string FileName)
+{
+	json topjson;
+
 	std::ifstream jsonfile(FileName);
 
-	// Error handler.
-	if (!jsonfile.is_open())
-	{
-		return 0;
-	}
-
-	// Streaming jsonfile into the topjson -memory-
+	//Streaming jsonfile into the topjson -memory-
 	jsonfile >> topjson;
 
 
-	// Topology
+	//Topology
 	std::unique_ptr<topology_s> topology = std::make_unique<topology_s>();
 
 	topology->id = topjson["id"].get<std::string>();
-	
+
 	int compsize = topjson["components"].size();
-	// Iterating over the components
+
+
 	for (int i = 0; i < compsize; i++)
 	{
 		std::string type = topjson["components"][i]["type"];
 		std::unique_ptr<electronic> device;
 
-		// Choosing the suitable class
+		//Choosing the suitable class.
 		if (type == "resistor")
 			device = std::make_unique<resistor>(topjson["components"][i]["id"]);
 		else if (type == "nmos")
@@ -58,39 +53,39 @@ using ordered_json = nlohmann::ordered_json;
 		else
 		{
 			//Can be replaced with any error handler
-			//std::cout << "[ERROR]Unrecognized type for device: " << topjson["components"][i]["id"] << '\n';
+			//std::cout << "[ERROR]Unrecognized device id: " << topjson["components"][i]["id"] << '\n';
 			continue;
 		}
 
 		float tempval;
-		// Retrieving default value
+		//Retrieving default value
 		tempval = topjson["components"][i][device->get_valname()]["default"].get<float>();
 		device->set_val_default(tempval);
 
-		// Retrieving min value
+		//Retrieving min value
 		tempval = topjson["components"][i][device->get_valname()]["min"].get<float>();
 		device->set_val_min(tempval);
 
-		// Retrieving max value
+		//Retrieving max value
 		tempval = topjson["components"][i][device->get_valname()]["max"].get<float>();
 		device->set_val_max(tempval);
 
-		// Retrieving netlist values
+		//Retrieving netlist values
 		for (const auto& item : topjson["components"][i]["netlist"].items())
 			device->netlist_setval(item.key(), item.value());
-		
+
 		topology->devices.push_back(std::move(device));
 	}
-	list.push_back(move(topology)); //topology list.
+	list.push_back(move(topology));
 
-	return 1;
+	return "SUCCEED";
 	
 }
 
 
-int writeJSON(std::shared_ptr<topology_s> topology, const std::string& FileName)
+Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
 {
-	ordered_json j; //using "ordered json" instead of "json" only is to maintain the order as inputted.
+	ordered_json j;
 	j["id"] = topology->id;
 	Devicelist list = topology->devices;
 	
@@ -116,36 +111,29 @@ int writeJSON(std::shared_ptr<topology_s> topology, const std::string& FileName)
 			j["components"][i]["netlist"][k] = v;
 	}
 
-	std::ofstream outfile(FileName);
-	// Error handler
-	if (!outfile.is_open())
-	{
-		return 0;
-	}
-	// Straeming the json structure into the file
-	outfile << std::setw(2) << j;
-	return 1;
+	std::ofstream out(FileName);
+	out << std::setw(2) << j;
+	return "SUCCEED";
 }
 
 
 
-int deleteTopology(TopologyList& list, const std::string& TopologyID)
+Result deleteTopology(TopologyList& list, std::string TopologyID)
 { 
-	bool found = false;
+
 	for (int i = 0, n = list.size(); i < n; i++) 
 	{
 		if (list[i]->id.compare(TopologyID) == 0)
 		{
 			list.erase(list.begin() + i);
-			found = true;
 			break;
 		}
 
 	}
-	return found;
+	return "SUCCEED";
 }
 
-Devicelist queryDevices(TopologyList& list, const std::string& TopologyID)
+Devicelist queryDevices(TopologyList& list, std::string TopologyID)
 {
 	Devicelist devlist;
 	for (int i = 0, n = list.size(); i < n; i++) 
@@ -157,11 +145,10 @@ Devicelist queryDevices(TopologyList& list, const std::string& TopologyID)
 		}
 
 	}
-	// Will return empty list in case no devices found
 	return devlist;
 }
 
-Devicelist queryDevicesWithNetlistNode(TopologyList& list, const std::string& TopologyID, const std::string& NetlistNodeID)
+Devicelist queryDevicesWithNetlistNode(TopologyList& list, std::string TopologyID, std::string NetlistNodeID)
 {
 	Devicelist devlist = queryDevices(list, TopologyID);
 	Devicelist connected; // Device list for devices connected to the netlist node.

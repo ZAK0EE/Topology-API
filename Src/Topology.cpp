@@ -2,15 +2,15 @@
 
 //*******************resistor class functions definition*******************//
 //setters
-void electronic::set_type(const std::string &str)
+void electronic::set_type(std::string str)
 {
     type = str;
 }
-void electronic::set_id(const std::string& str)
+void electronic::set_id(std::string str)
 {
     id = str;
 }
-void electronic::set_valname(const std::string& str)
+void electronic::set_valname(std::string str)
 {
     valname = str;
 }
@@ -26,11 +26,11 @@ void electronic::set_val_max(float val)
 {
     value.max = val;
 }
-void electronic::netlist_insert(const std::string& key, const std::string& str)
+void electronic::netlist_insert(std::string key, std::string str)
 {
     netlist.insert({ key, str});
 }
-void electronic::netlist_setval(const std::string& key, const std::string& val)
+void electronic::netlist_setval(std::string key, std::string val)
 {
     netlist[key] = val;
 }
@@ -59,7 +59,7 @@ float electronic::get_val_max(void)
 {
     return value.max;
 }
-std::string electronic::netlist_getval(const std::string& key)
+std::string electronic::netlist_getval(std::string key)
 {
     return netlist[key];
 }
@@ -69,7 +69,7 @@ const std::map<std::string, std::string>* electronic::netlist_getall(void)
 }
 
 //*******************resistor class functions definition*******************//
-resistor::resistor(const std::string& id = "NULL")
+resistor::resistor(std::string id)
 {
     set_type("resistor");
     set_id(id);
@@ -78,7 +78,7 @@ resistor::resistor(const std::string& id = "NULL")
     netlist_insert("t2", "NULL");
 }
 //*******************nmos class functions definition*******************//
-nmos::nmos(const std::string& id = "NULL")
+nmos::nmos(std::string id = "NULL")
 {
     set_type("nmos");
     set_id(id);
