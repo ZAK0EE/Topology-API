@@ -10,8 +10,15 @@
 
 #include "API.h"
 
+using json = nlohmann::json;
+using ordered_json = nlohmann::ordered_json;
 
+ struct topology_s
+{
+	std::string id;
+	Devicelist devices;
 
+};
 
 
 Result readJSON(TopologyList &list, std::string FileName)
@@ -114,7 +121,8 @@ Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName)
 Result deleteTopology(TopologyList& list, std::string TopologyID)
 { 
 
-	for (int i = 0, n = list.size(); i < n; i++) {
+	for (int i = 0, n = list.size(); i < n; i++) 
+	{
 		if (list[i]->id.compare(TopologyID) == 0)
 		{
 			list.erase(list.begin() + i);
@@ -128,7 +136,8 @@ Result deleteTopology(TopologyList& list, std::string TopologyID)
 Devicelist queryDevices(TopologyList& list, std::string TopologyID)
 {
 	Devicelist devlist;
-	for (int i = 0, n = list.size(); i < n; i++) {
+	for (int i = 0, n = list.size(); i < n; i++) 
+	{
 		if (list[i]->id.compare(TopologyID) == 0)
 		{
 			devlist = list[i]->devices;
@@ -137,4 +146,26 @@ Devicelist queryDevices(TopologyList& list, std::string TopologyID)
 
 	}
 	return devlist;
+}
+
+Devicelist queryDevicesWithNetlistNode(TopologyList& list, std::string TopologyID, std::string NetlistNodeID)
+{
+	Devicelist devlist = queryDevices(list, TopologyID);
+	Devicelist connected; // Device list for devices connected to the netlist node.
+	for (int i = 0, n = devlist.size(); i < n; i++)
+	{
+		const std::map<std::string, std::string>* netlist = devlist[i]->netlist_getall();
+		for (auto const& [k, v] : *netlist)
+		{
+			//v is the netlist node ID and k is the key.
+			if (NetlistNodeID.compare(v) == 0)
+			{
+				connected.push_back(devlist[i]);
+				break;
+			}
+		}
+	}
+
+
+	return connected;
 }

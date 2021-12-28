@@ -1,25 +1,12 @@
 #ifndef API_H_INCLUDED
 #define API_H_INCLUDED
 
-#include "json.hpp"
+#include <vector>
 #include "Topology.h"
 
-using json = nlohmann::json;
-using ordered_json = nlohmann::ordered_json;
-
 typedef std::vector<std::shared_ptr<electronic>> Devicelist;
-
-typedef struct topology_s
-{
-	std::string id;
-	Devicelist devices;
-
-}topology_s;
-
-
+typedef struct topology_s topology_s;
 typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
-
-
 
 typedef std::string Result;
 //Function prototypes
@@ -28,5 +15,6 @@ Result readJSON(TopologyList& list, std::string FileName);
 Result writeJSON(std::shared_ptr<topology_s> topology, std::string FileName);
 Result deleteTopology(TopologyList& list, std::string TopologyID);
 Devicelist queryDevices(TopologyList& list, std::string TopologyID);
+Devicelist queryDevicesWithNetlistNode(TopologyList& list, std::string TopologyID, std::string NetlistNodeID);
 //Devicelist queryDevicesTopologyList& (TopologyID);
 #endif // API_H_INCLUDED
