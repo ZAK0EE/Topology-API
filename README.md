@@ -35,7 +35,7 @@ DeviceList queryDevicesWithNetlistNode(TopologyList& list, const std::string& To
 
  #### readJSON
  ##### Brief:
- this function reads topology from "FileName" and stored it in the "list"
+ this function reads topology from "FileName" and stores it in the "list"
  ##### Note:
 FileName is assumed to be a valid JSON file
  ##### Parameters:
@@ -66,6 +66,7 @@ std::vector<std::string> queryTopologies(TopologyList& list);
 FileName is assumed to be a valid JSON file
 ##### Parameters:
 **list**: list TopologyList created by the user
+
 **FileName**: the name of the json file to write to
 ##### Return:  
 Returns 1 if success and 0 if there's a problem:
@@ -80,6 +81,7 @@ int writeJSON(std::shared_ptr<topology_s> topology, const std::string& FileName)
  This function deletes a Topology from the given "list" identified by the "TopologyID"
 ##### Parameters:
 **list**: list TopologyList created by the user
+
 **TopologyID**: The ID of the topology wanted to be deleted
 ##### Return:
 Returns 1 if topology is found and deleted, and 0 if there's a problem:
@@ -93,6 +95,7 @@ int deleteTopology(TopologyList& list, const std::string& TopologyID);
  This function iterates over the TopologyList and returns a DeviceList for a Topology with id "TopologyID"
 ##### Parameters:
 **list**: TopologyList created by the user
+
 **TopologyID**: The ID of the topology wanted to be returned
 ##### Return:
 - Returns a DeviceList for the Topology with ID "TopologyID"
@@ -107,7 +110,9 @@ DeviceList queryDevices(TopologyList& list, const std::string& TopologyID);
  This function iterates over the Topology's components with ID "TopologyID" and returns a DeviceList that contains all components that are connected to the netlist node.
 ##### Parameters:
 **list**: TopologyList created by the user
+
 **TopologyID**: The ID of the topology wanted to be checked
+
 **NetlistNodeID**: the netlist node id, that we are checking connectivity to it.
 ##### Return:
  Returns a DeviceList for components that are connected to the "NetlistNodeID"
