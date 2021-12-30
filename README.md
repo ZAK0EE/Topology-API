@@ -1,6 +1,6 @@
 # Topology API
-## Resources
-[nlohmann json](https://github.com/nlohmann/json) library proved its capabilities to ease the process of parsing JSON files.
+
+This project was requested by [Master Micro](https://www.master-micro.com/) as a software challange for mid-year internship. 
 
 
 ## Features
@@ -12,6 +12,9 @@
 - Query about which devices are in a given topology.
 - Query about which devices are connected to a given netlist node in a given topology.
 
+
+## Resources
+[nlohmann json](https://github.com/nlohmann/json) library proved its capabilities to ease the process of parsing JSON files.
 ## Data structure diagram
 ![Data structure diagram](diagrams/datastructureDiagram.png)
 #### Code
@@ -21,7 +24,7 @@ typedef struct topology_s topology_s;
 typedef std::vector<std::shared_ptr<topology_s>> TopologyList;
 ```
 
-## API functions
+## API documentation
 ### summary
 ```c++
 int readJSON(TopologyList& list, const std::string& FileName);
@@ -31,7 +34,7 @@ int deleteTopology(TopologyList& list, const std::string& TopologyID);
 DeviceList queryDevices(TopologyList& list, const std::string& TopologyID);
 DeviceList queryDevicesWithNetlistNode(TopologyList& list, const std::string& TopologyID, const std::string& NetlistNodeID);
 ```
-## Details
+## Description
 
  #### readJSON
  ##### Brief:
@@ -122,5 +125,73 @@ DeviceList queryDevices(TopologyList& list, const std::string& TopologyID);
 DeviceList queryDevicesWithNetlistNode(TopologyList& list, const std::string& TopologyID, const std::string& NetlistNodeID);
 ```
 
+## Class documentation
+![Class structure diagram](diagrams/class_diagram.png)
 
+#### Code
+```c++
+class electronic
+{
+private:
+    std::string type, id, valname;
+    struct valstruct { float xdefault, min, max; }; valstruct value;
+    std::map<std::string, std::string> netlist;
+public:
+    //setters
+    void set_type(const std::string& str);
+    void set_id(const std::string& str);
+    void set_valname(const std::string& str);
+    void set_val_default(float val);
+    void set_val_min(float val);
+    void set_val_max(float val);
+    void netlist_insert(const std::string& key, const std::string& str);
+    void netlist_setval(const std::string& key, const std::string& val);
+    //getters
+    std::string get_type(void);
+    std::string get_id(void);
+    std::string get_valname(void);
+    float get_val_default(void);
+    float get_val_min(void);
+    float get_val_max(void);
+    std::string netlist_getval(const std::string&);
+    const std::map<std::string, std::string>* netlist_getall(void);
+};
 
+class resistor : public electronic
+{
+public:
+    explicit resistor(const std::string& id);
+};
+
+class nmos : public electronic
+{
+public:
+    explicit nmos(const std::string& id);
+};
+```
+## Description
+##### Private variables:
+> Note: All private variables refer to the component description in the JSON file
+
+**id:** The component id.
+
+**type:** The component type.
+
+**valname:** Refers to the properties object name such as "resistance" and "m(1)".
+
+**valstruct:** It's a  structure refers to the properties object elements, it's assumed that all components have default, min and max values.
+
+**netlist:** Refers to the component netlist and due to the difference of components terminals, this was declared as a map to accept diverse names. 
+
+##### Public variables:
+Public variables are simply getters and setters of previousely mentioned variables.
+
+#### Class resistor:
+* This class is inherited from electronic class and has only one public function which is the class constructor.
+* The class constructor that takes id as input, initializes the common values between all resistor components like type = "resistor", valname  = "Resistance" and netlist terminals "t1" and "t2".
+
+#### Class nmos 
+* This class is inherited from electronic class and has only one public function which is the class constructor.
+* The class constructor that takes id as input, initializes the common values between all nmos components like type = "nmos", valname  = "m(1)" and netlist terminals "drain", "gate" and "source".
+
+### And finally, all thanks to [Master Micro](https://www.master-micro.com/) for providing such fun journey.
